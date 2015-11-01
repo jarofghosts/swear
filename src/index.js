@@ -3,10 +3,13 @@ const {isObject} = require('util')
 const Promise = require('es6-promise').Promise
 const isPromise = require('is-promise')
 const setIn = require('set-in')
+const getIn = require('get-in')
 
 module.exports = swear
 
 function swear (obj) {
+  let previousLocations = null
+
   if (isPromise(obj)) {
     return new Promise((resolve, reject) => {
       obj
@@ -23,7 +26,11 @@ function swear (obj) {
   }
 
   function resolveObj (resolve, reject) {
-    let {promises, locations} = getPromises(obj)
+    let {promises, locations} = previousLocations === null
+      ? getPromises(obj)
+      : recheckPromises(obj, previousLocations)
+
+    previousLocations = locations.slice()
 
     if (!promises.length) {
       return resolve(obj)
@@ -41,6 +48,19 @@ function swear (obj) {
       resolveObj(resolve, reject)
     }
   }
+}
+
+function recheckPromises (obj, locations) {
+  let promises = []
+  let newLocations = []
+
+  for (let location of locations) {
+    let check = getPromises(getIn(obj, location), location)
+    promises = promises.concat(check.promises)
+    newLocations = newLocations.concat(check.locations)
+  }
+
+  return {promises, locations: newLocations}
 }
 
 function getPromises (obj, keys = [], promises = [], locations = []) {
