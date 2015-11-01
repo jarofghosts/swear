@@ -31,9 +31,9 @@ swear({
 
 ## API
 
-`swear(Object) -> Promise`
+`swear(x) -> Promise`
 
-* `Object` can be any object or array
+* `x` can be basically anything.
 
 ## License
 
