@@ -19,7 +19,7 @@
     "lint": "standard src/*.js tests/*.js",
     "build": "babel --presets es2015 src --out-dir lib",
     "start": "npm run build -- --watch",
-    "test": "npm run build && babel-node tests/*.js && npm run lint"
+    "test": "npm run build && babel-node tests/index.js && npm run lint"
   },
   "repository": {
     "type": "git",
