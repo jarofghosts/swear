@@ -1,6 +1,6 @@
 {
   "name": "swear",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "recursive promise resolution",
   "main": "lib/index.js",
   "dependencies": {
