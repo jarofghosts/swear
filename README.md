@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/npm/l/swear.svg?style=flat-square)](https://github.com/jarofghosts/swear/blob/master/LICENSE)
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-a more flexible `Promise.all`
+A more flexible `Promise.all`.
 
 ## Usage
 
@@ -17,12 +17,14 @@ const swear = require('swear')
 
 swear({
   obj: fetch('/json').then(res => res.json()), 
-  numbers: [1, 2, new Promise(resolve => resolve(3))],
-  wut: new Promise(resolve => resolve({a: new Promise(resolve => resolve('b'))}))
+  numbers: [1, 2, Promise.resolve(3)],
+  wut: Promise.resolve({a: Promise.resolve('b'))}))
 }).then(x => {
   // {obj: {api: 'result'}, numbers: [1, 2, 3], wut: {a: 'b'}}
 })
 ```
+
+Accepts anything and resolves once *every* promise within the input is resolved.
 
 ## Notes
 
