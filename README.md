@@ -27,7 +27,6 @@ swear({
 ## Notes
 
 * If any promise rejects, the returned promise will immediately reject.
-* This is implemented in a pretty terrible and suboptimal way.
 
 ## API
 
