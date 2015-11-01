@@ -82,6 +82,30 @@ test('works with strings and numbers', t => {
     .catch(t.fail)
 })
 
+test('works with a promise that resolves to a string or number', t => {
+  t.plan(2)
+
+  swear(promisify(4))
+    .then(x => t.equal(x, 4))
+    .catch(t.fail)
+
+  swear(promisify('lol'))
+    .then(x => t.equal(x, 'lol'))
+    .catch(t.fail)
+})
+
+test('safe to wrap', t => {
+  t.plan(2)
+
+  swear(swear(4))
+    .then(x => t.equal(x, 4))
+    .catch(t.fail)
+
+  swear(swear(swear(4)))
+    .then(x => t.equal(x, 4))
+    .catch(t.fail)
+})
+
 function promisify (x) {
   return new Promise(resolve => resolve(x))
 }

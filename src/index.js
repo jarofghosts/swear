@@ -14,6 +14,10 @@ function swear (obj) {
     return new Promise((resolve, reject) => {
       obj
         .then(x => {
+          if (!isObject(x)) {
+            resolve(x)
+          }
+
           obj = x
           resolveObj(resolve, reject)
         })
@@ -22,7 +26,7 @@ function swear (obj) {
   } else if (isObject(obj)) {
     return new Promise(resolveObj)
   } else {
-    return new Promise(resolve => resolve(obj))
+    return Promise.resolve(obj)
   }
 
   function resolveObj (resolve, reject) {
