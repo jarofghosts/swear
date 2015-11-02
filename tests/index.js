@@ -14,7 +14,7 @@ test('always returns a promise', t => {
 test('resolves promises in a provided object', t => {
   t.plan(1)
 
-  swear({a: promisify('b')})
+  swear({a: Promise.resolve('b')})
     .then(x => t.deepEqual(x, {a: 'b'}))
     .catch(t.fail)
 })
@@ -22,7 +22,7 @@ test('resolves promises in a provided object', t => {
 test('rejects if any promise is rejected', t => {
   t.plan(2)
 
-  swear({a: rejectify('error')})
+  swear({a: Promise.reject(new Error('error'))})
     .then(() => t.fail())
     .catch(err => {
       t.true(isError(err))
@@ -33,7 +33,7 @@ test('rejects if any promise is rejected', t => {
 test('resolves all the way down', t => {
   t.plan(1)
 
-  swear({a: promisify({b: promisify('c')})})
+  swear({a: Promise.resolve({b: Promise.resolve('c')})})
     .then(x => t.deepEqual(x, {a: {b: 'c'}}))
     .catch(t.fail)
 })
@@ -41,7 +41,7 @@ test('resolves all the way down', t => {
 test('works with arrays', t => {
   t.plan(1)
 
-  swear([promisify(1)])
+  swear([Promise.resolve(1)])
     .then(x => t.deepEqual(x, [1]))
     .catch(t.fail)
 })
@@ -49,7 +49,7 @@ test('works with arrays', t => {
 test('works with arrays chained', t => {
   t.plan(1)
 
-  swear([promisify({a: promisify(1)})])
+  swear([Promise.resolve({a: Promise.resolve(1)})])
     .then(x => t.deepEqual(x, [{a: 1}]))
     .catch(t.fail)
 })
@@ -57,15 +57,15 @@ test('works with arrays chained', t => {
 test('works with a promise', t => {
   t.plan(3)
 
-  swear(promisify('x'))
+  swear(Promise.resolve('x'))
     .then(x => t.equal(x, 'x'))
     .catch(t.fail)
 
-  swear(rejectify('x'))
+  swear(Promise.reject(new Error('x')))
     .then(t.fail)
     .catch(t.pass)
 
-  swear(promisify({a: promisify('b')}))
+  swear(Promise.resolve({a: Promise.resolve('b')}))
     .then(x => t.deepEqual(x, {a: 'b'}))
     .catch(t.fail)
 })
@@ -85,11 +85,11 @@ test('works with strings and numbers', t => {
 test('works with a promise that resolves to a string or number', t => {
   t.plan(2)
 
-  swear(promisify(4))
+  swear(Promise.resolve(4))
     .then(x => t.equal(x, 4))
     .catch(t.fail)
 
-  swear(promisify('lol'))
+  swear(Promise.resolve('lol'))
     .then(x => t.equal(x, 'lol'))
     .catch(t.fail)
 })
@@ -105,11 +105,3 @@ test('safe to wrap', t => {
     .then(x => t.equal(x, 4))
     .catch(t.fail)
 })
-
-function promisify (x) {
-  return new Promise(resolve => resolve(x))
-}
-
-function rejectify (x) {
-  return new Promise((resolve, reject) => reject(new Error(x)))
-}
